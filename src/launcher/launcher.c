@@ -141,6 +141,7 @@ exit:
 
 static BOOL LogonCreateProcess(
     PWSTR UserName,
+    HANDLE Token,
     LPCWSTR ApplicationName,
     LPWSTR CommandLine,
     LPSECURITY_ATTRIBUTES ProcessAttributes,
@@ -157,11 +158,20 @@ static BOOL LogonCreateProcess(
     if (0 != UserName)
     {
         if (0 == invariant_wcsicmp(UserName, L"LocalSystem"))
+        {
             UserName = 0;
+            Token = 0;
+        }
         else
         if (0 == invariant_wcsicmp(UserName, L"LocalService") ||
             0 == invariant_wcsicmp(UserName, L"NetworkService"))
+        {
             DomainName = L"NT AUTHORITY";
+            Token = 0;
+        }
+        else
+        if (0 == invariant_wcsicmp(UserName, L"."))
+            ;
         else
         {
             SetLastError(ERROR_ACCESS_DENIED);
@@ -185,18 +195,43 @@ static BOOL LogonCreateProcess(
 
     HANDLE LogonToken = 0;
     PVOID EnvironmentBlock = 0;
+    DWORD SessionId;
     DWORD LastError;
     BOOL Success;
 
-    Success = LogonUserW(
-        UserName,
-        DomainName,
-        0,
-        LOGON32_LOGON_SERVICE,
-        LOGON32_PROVIDER_DEFAULT,
-        &LogonToken);
-    if (!Success)
-        goto exit;
+    if (0 == Token)
+    {
+        /* logon user and get primary token */
+        Success = LogonUserW(
+            UserName,
+            DomainName,
+            0,
+            LOGON32_LOGON_SERVICE,
+            LOGON32_PROVIDER_DEFAULT,
+            &LogonToken);
+        if (!Success)
+            goto exit;
+    }
+    else
+    {
+        /* convert the impersonation token to a primary token */
+        Success = DuplicateTokenEx(Token,
+            TOKEN_ALL_ACCESS,
+            0,
+            SecurityAnonymous,
+            TokenPrimary,
+            &LogonToken);
+        if (!Success)
+            goto exit;
+
+        if (!ProcessIdToSessionId(GetCurrentProcessId(), &SessionId))
+            SessionId = 0;
+
+        /* place the duplicated token in the service session (session 0) */
+        Success = SetTokenInformation(LogonToken, TokenSessionId, &SessionId, sizeof SessionId);
+        if (!Success)
+            goto exit;
+    }
 
     if (0 == Environment)
     {
@@ -544,7 +579,7 @@ static NTSTATUS SvcInstanceAccessCheck(HANDLE ClientToken, ULONG DesiredAccess,
     return Result;
 }
 
-NTSTATUS SvcInstanceCreateProcess(PWSTR UserName,
+NTSTATUS SvcInstanceCreateProcess(PWSTR UserName, HANDLE ClientToken,
     PWSTR Executable, PWSTR CommandLine,
     HANDLE StdioHandles[2],
     PPROCESS_INFORMATION ProcessInfo)
@@ -623,7 +658,7 @@ NTSTATUS SvcInstanceCreateProcess(PWSTR UserName,
         StartupInfoEx.StartupInfo.hStdOutput = ChildHandles[1];
         StartupInfoEx.StartupInfo.hStdError = ChildHandles[2];
 
-        if (!LogonCreateProcess(UserName,
+        if (!LogonCreateProcess(UserName, ClientToken,
             Executable, CommandLine, 0, 0, TRUE,
             CREATE_SUSPENDED | CREATE_NEW_PROCESS_GROUP | EXTENDED_STARTUPINFO_PRESENT, 0, 0,
             &StartupInfoEx.StartupInfo, ProcessInfo))
@@ -634,7 +669,7 @@ NTSTATUS SvcInstanceCreateProcess(PWSTR UserName,
     }
     else
     {
-        if (!LogonCreateProcess(UserName,
+        if (!LogonCreateProcess(UserName, ClientToken,
             Executable, CommandLine, 0, 0, FALSE,
             CREATE_SUSPENDED | CREATE_NEW_PROCESS_GROUP, 0, 0,
             &StartupInfoEx.StartupInfo, ProcessInfo))
@@ -839,7 +874,7 @@ NTSTATUS SvcInstanceCreate(HANDLE ClientToken,
     if (!NT_SUCCESS(Result))
         goto exit;
 
-    Result = SvcInstanceCreateProcess(L'\0' != RunAsBuf[0] ? RunAsBuf : 0,
+    Result = SvcInstanceCreateProcess(L'\0' != RunAsBuf[0] ? RunAsBuf : 0, ClientToken,
         Executable, SvcInstance->CommandLine,
         RedirectStdio ? SvcInstance->StdioHandles : 0, &ProcessInfo);
     if (!NT_SUCCESS(Result))
@@ -1408,7 +1443,7 @@ static DWORD WINAPI SvcPipeServer(PVOID Context)
 
         ClientToken = 0;
         if (!ImpersonateNamedPipeClient(SvcPipe) ||
-            !OpenThreadToken(GetCurrentThread(), TOKEN_QUERY, FALSE, &ClientToken) ||
+            !OpenThreadToken(GetCurrentThread(), TOKEN_QUERY | TOKEN_DUPLICATE, FALSE, &ClientToken) ||
             !RevertToSelf())
         {
             LastError = GetLastError();
