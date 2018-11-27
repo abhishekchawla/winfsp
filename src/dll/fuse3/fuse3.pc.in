@@ -1,6 +1,6 @@
 prefix=${pcfiledir}/..
 incdir=${prefix}/inc/fuse3
-implib=${prefix}/bin/winfsp-${arch}.dll
+implib=${prefix}/bin/citrixfsp-${arch}.dll
 
 Name: fuse3
 Description: WinFsp FUSE3 compatible API

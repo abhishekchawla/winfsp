@@ -25,7 +25,7 @@
 #include <sddl.h>
 #include <userenv.h>
 
-#define PROGNAME                        "WinFsp.Launcher"
+#define PROGNAME                        "CitrixFsp.Launcher"
 
 static NTSTATUS (NTAPI *SvcNtOpenSymbolicLinkObject)(
     PHANDLE LinkHandle,
