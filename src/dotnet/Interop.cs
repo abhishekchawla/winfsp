@@ -1024,10 +1024,10 @@ namespace Fsp.Interop
         private static IntPtr LoadDll()
         {
             String DllPath = null;
-            String DllName = 8 == IntPtr.Size ? "winfsp-x64.dll" : "winfsp-x86.dll";
+            String DllName = 8 == IntPtr.Size ? "citrixfsp-x64.dll" : "citrixfsp-x86.dll";
             String KeyName = 8 == IntPtr.Size ?
-                "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\WinFsp" :
-                "HKEY_LOCAL_MACHINE\\Software\\WinFsp";
+                "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\CitrixFsp" :
+                "HKEY_LOCAL_MACHINE\\Software\\CitrixFsp";
             IntPtr Module;
             Module = LoadLibraryW(DllName);
             if (IntPtr.Zero == Module)

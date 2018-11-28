@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <ProjectName>winfsp.net</ProjectName>
     <RootNamespace>Fsp</RootNamespace>
-    <AssemblyName>winfsp-msil</AssemblyName>
+    <AssemblyName>citrixfsp-msil</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
