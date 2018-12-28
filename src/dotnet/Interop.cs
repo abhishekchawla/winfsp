@@ -1025,9 +1025,7 @@ namespace Fsp.Interop
         {
             String DllPath = null;
             String DllName = 8 == IntPtr.Size ? "citrixfsp-x64.dll" : "citrixfsp-x86.dll";
-            String KeyName = 8 == IntPtr.Size ?
-                "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\CitrixFsp" :
-                "HKEY_LOCAL_MACHINE\\Software\\CitrixFsp";
+            String KeyName = "HKEY_LOCAL_MACHINE\\Software\\Citrix\\Citrix Files\\CitrixFsp";
             IntPtr Module;
             Module = LoadLibraryW(DllName);
             if (IntPtr.Zero == Module)
