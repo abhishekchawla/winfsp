@@ -28,7 +28,7 @@
 #include <shared/minimal.h>
 #include <strsafe.h>
 
-#define LIBRARY_NAME                    "WinFsp"
+#define LIBRARY_NAME                    "CitrixFsp"
 
 /* DEBUGLOG */
 #if !defined(NDEBUG)

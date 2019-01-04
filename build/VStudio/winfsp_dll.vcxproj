@@ -190,13 +190,13 @@ copy /b $(OutDir)fuse3-$(PlatformTarget).pc + %(FullPath) $(OutDir)fuse3-$(Platf
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(ProjectName).build\$(Configuration)\$(PlatformTarget)\</IntDir>
-    <TargetName>$(SolutionName)-$(PlatformTarget)</TargetName>
+    <TargetName>citrixfsp-$(PlatformTarget)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(ProjectName).build\$(Configuration)\$(PlatformTarget)\</IntDir>
-    <TargetName>$(SolutionName)-$(PlatformTarget)</TargetName>
+    <TargetName>citrixfsp-$(PlatformTarget)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
