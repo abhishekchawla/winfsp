@@ -28,10 +28,10 @@
 extern "C" {
 #endif
 
-#define FSP_LAUNCH_REGKEY               "Software\\WinFsp\\Services"
+#define FSP_LAUNCH_REGKEY               "Software\\CitrixFsp\\Services"
 #define FSP_LAUNCH_REGKEY_WOW64         KEY_WOW64_32KEY
 
-#define FSP_LAUNCH_PIPE_NAME            "\\\\.\\pipe\\WinFsp.{14E7137D-22B4-437A-B0C1-D21D1BDF3767}"
+#define FSP_LAUNCH_PIPE_NAME            "\\\\.\\pipe\\CitrixFsp.{6F28C2C5-F449-40F7-888C-BCC10DE04C54}"
 #define FSP_LAUNCH_PIPE_BUFFER_SIZE     4096
 #define FSP_LAUNCH_PIPE_OWNER           ((PSID)WinLocalSystemSid)
 

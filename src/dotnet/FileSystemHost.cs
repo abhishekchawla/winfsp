@@ -229,7 +229,7 @@ namespace Fsp
         public Int32 Preflight(String MountPoint)
         {
             return Api.FspFileSystemPreflight(
-                _VolumeParams.IsPrefixEmpty() ? "WinFsp.Disk" : "WinFsp.Net",
+                _VolumeParams.IsPrefixEmpty() ? "CitrixFsp.Disk" : "CitrixFsp.Net",
                 MountPoint);
         }
         /// <summary>
@@ -270,7 +270,7 @@ namespace Fsp
             if (0 > Result)
                 return Result;
             Result = Api.FspFileSystemCreate(
-                _VolumeParams.IsPrefixEmpty() ? "WinFsp.Disk" : "WinFsp.Net",
+                _VolumeParams.IsPrefixEmpty() ? "CitrixFsp.Disk" : "CitrixFsp.Net",
                 ref _VolumeParams, _FileSystemInterfacePtr, out _FileSystemPtr);
             if (0 > Result)
                 return Result;
