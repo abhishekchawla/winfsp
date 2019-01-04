@@ -35,10 +35,10 @@ extern "C" {
 #define FSP_FSCTL_STATIC_ASSERT(e,m)    static_assert(1,"")
 #endif
 
-#define FSP_FSCTL_DRIVER_NAME           "WinFsp"
-#define FSP_FSCTL_DISK_DEVICE_NAME      "WinFsp.Disk"
-#define FSP_FSCTL_NET_DEVICE_NAME       "WinFsp.Net"
-#define FSP_FSCTL_MUP_DEVICE_NAME       "WinFsp.Mup"
+#define FSP_FSCTL_DRIVER_NAME           "CitrixFsp"
+#define FSP_FSCTL_DISK_DEVICE_NAME      "CitrixFsp.Disk"
+#define FSP_FSCTL_NET_DEVICE_NAME       "CitrixFsp.Net"
+#define FSP_FSCTL_MUP_DEVICE_NAME       "CitrixFsp.Mup"
 
 // {6F9D25FA-6DEE-4A9D-80F5-E98E14F35E54}
 extern const __declspec(selectany) GUID FspFsctlDeviceClassGuid =
